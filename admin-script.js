@@ -102,9 +102,12 @@ function parseSchedule(day) {
             const lines = text.split('\n').map(line => line.trim()).filter(line => line);
             
             for (let i = 0; i < lines.length - 2; i += 3) {
-                const time = parseTime(lines[i]);
-                const duration = parseDuration(lines[i + 1]);
+                const timeStr = lines[i];
+                const durationStr = lines[i + 1];
                 const activity = lines[i + 2];
+                
+                const time = parseTime(timeStr);
+                const duration = parseDuration(durationStr);
                 
                 if (time && duration !== null && activity) {
                     schedule.push({ time, duration, activity });
@@ -357,7 +360,14 @@ function exportDay(day) {
     }
     
     const jsSchedule = schedule.map(item => {
-        return `        { time: "${item.time}", duration: ${item.duration}, activity: "${item.activity.replace(/"/g, '\\"')}" }`;
+        // Escape special characters for JavaScript strings
+        const escapedActivity = item.activity
+            .replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        return `        { time: "${item.time}", duration: ${item.duration}, activity: "${escapedActivity}" }`;
     }).join(',\n');
     
     const originalTemplate = getOriginalTemplate();
