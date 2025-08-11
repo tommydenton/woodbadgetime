@@ -1,3 +1,9 @@
+/*
+ * Wood Badge Schedule Admin Portal - JavaScript
+ * Version: 1.0.0
+ * Last Updated: August 10, 2025
+ */
+
 // Data storage
 let scheduleData = {
     day1: [],
@@ -101,7 +107,12 @@ function parseSchedule(day) {
             // Try three-line format
             const lines = text.split('\n').map(line => line.trim()).filter(line => line);
             
-            for (let i = 0; i < lines.length - 2; i += 3) {
+            // Check if we have groups of 3 lines
+            if (lines.length % 3 !== 0) {
+                throw new Error(`Expected groups of 3 lines (time, duration, activity), but got ${lines.length} lines. Please check your format.`);
+            }
+            
+            for (let i = 0; i < lines.length; i += 3) {
                 const timeStr = lines[i];
                 const durationStr = lines[i + 1];
                 const activity = lines[i + 2];
@@ -109,9 +120,17 @@ function parseSchedule(day) {
                 const time = parseTime(timeStr);
                 const duration = parseDuration(durationStr);
                 
-                if (time && duration !== null && activity) {
-                    schedule.push({ time, duration, activity });
+                if (!time) {
+                    throw new Error(`Invalid time format: "${timeStr}" at line ${i + 1}`);
                 }
+                if (duration === null) {
+                    throw new Error(`Invalid duration format: "${durationStr}" at line ${i + 2}`);
+                }
+                if (!activity) {
+                    throw new Error(`Missing activity at line ${i + 3}`);
+                }
+                
+                schedule.push({ time, duration, activity });
             }
         }
         
