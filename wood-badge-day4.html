@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Cache Busting Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>Official Wood Badge Day 4 Time</title>
+    <style>
+        body { background-color: #000000; color: #00ff00; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        a { color: #00ff00; text-decoration: underline; }
+        a:hover { color: #ffffff; }
+        .time-display { font-size: 72px; margin: 30px 0; }
+        .countdown-display { font-size: 48px; margin: 30px 0; color: #ffff00; }
+        .activity-section { margin: 40px 0; padding: 20px; border: 2px solid #00ff00; border-radius: 10px; }
+        .current-activity { font-size: 24px; color: #ff6600; margin: 20px 0; }
+        .next-activity { font-size: 36px; color: #00ffff; margin: 20px 0; }
+        .activity-time { font-size: 18px; color: #ffff00; }
+        .credit { margin-top: 40px; font-size: 18px; }
+        .section { margin: 40px 0; }
+        .schedule-section { margin: 40px 0; padding: 20px; border: 2px solid #00ff00; border-radius: 10px; max-height: 400px; overflow-y: auto; }
+        .schedule-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; margin: 4px 0; border-radius: 5px; font-size: 16px; }
+        .schedule-item.completed { text-decoration: line-through; color: #666666; background-color: #111111; }
+        .schedule-item.current { background-color: #ff6600; color: #000000; font-weight: bold; }
+        .schedule-item.upcoming { color: #00ff00; }
+        .schedule-time { min-width: 120px; text-align: left; }
+        .schedule-activity { flex-grow: 1; text-align: left; margin-left: 20px; }
+        .schedule-duration { min-width: 60px; text-align: right; margin-left: 10px; font-size: 14px; }
+        .schedule-controls { margin: 20px 0; padding: 15px; border: 2px solid #ffff00; border-radius: 10px; background-color: #111111; }
+        .control-buttons { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; justify-content: center; }
+        .control-btn { background-color: #00ff00; color: #000000; border: none; padding: 8px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        .control-btn:hover { background-color: #ffffff; }
+        .control-btn.active { background-color: #ff6600; color: #ffffff; }
+        .status-display { text-align: center; margin: 10px 0; font-size: 18px; font-weight: bold; }
+        .adjustment-counter { text-align: center; margin: 5px 0; font-size: 14px; color: #cccccc; }
+        .ahead { color: #00ff00; }
+        .behind { color: #ff6600; }
+        .on-time { color: #ffff00; }
+        .reset-btn { background-color: #ffff00; color: #000000; }
+        .version-info { margin-top: 20px; padding: 15px; border: 1px solid #333; border-radius: 5px; background-color: #111; font-size: 14px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h1>Official Wood Badge Day 4 Time is:</h1>
+        <div class="time-display" id="current-time"></div>
+    </div>
+    
+    <div class="activity-section">
+        <h2 id="current-activity-header">Current Activity:</h2>
+        <div class="current-activity" id="current-activity">Loading...</div>
+        <div class="countdown-display" id="current-countdown"></div>
+        
+        <h3 id="next-activity-header">Next Activity:</h3>
+        <div class="next-activity" id="next-activity">Loading...</div>
+    </div>
+    
+    <div class="schedule-controls">
+        <h3>Schedule Control</h3>
+        <div class="status-display" id="schedule-status">Following Real Time</div>
+        <div class="adjustment-counter" id="adjustment-counter">Adjustments: 0</div>
+        <div class="control-buttons">
+            <button class="control-btn active" id="auto-btn" onclick="setAutoMode()">Auto Track</button>
+            <button class="control-btn" id="manual-btn" onclick="setManualMode()">Manual Control</button>
+            <button class="control-btn reset-btn" onclick="resetToSchedule()">Reset to Schedule</button>
+        </div>
+        <div class="control-buttons" id="manual-controls" style="display: none;">
+            <button class="control-btn" onclick="skipActivity()">Skip Current</button>
+            <button class="control-btn" onclick="adjustTime(-5)">-5 min</button>
+            <button class="control-btn" onclick="adjustTime(-1)">-1 min</button>
+            <button class="control-btn" onclick="adjustTime(1)">+1 min</button>
+            <button class="control-btn" onclick="adjustTime(5)">+5 min</button>
+            <button class="control-btn" onclick="endCurrentActivity()">End Current</button>
+        </div>
+    </div>
+    
+    <div class="schedule-section">
+        <h2>Full Schedule:</h2>
+        <div id="full-schedule"></div>
+    </div>
+    
+    <div class="credit">
+        Time displayed for Wood Badge Day 4 - SR^2 Scout Camp, Texas (Central Time)<br>
+        <small>Offline capable - no internet connection required</small>
+    </div>
+    
+    <div class="version-info">
+        <strong>Timer Version:</strong> 1.3.0<br>
+        <strong>Generated:</strong> <span id="generation-time"></span><br>
+        <strong>Admin Portal Version:</strong> 1.7.0
+    </div>
+    
+    <script>
+    let isManualMode = false;
+    let scheduleOffset = 0;
+    let manualCurrentActivity = -1;
+    let adjustmentCount = 0;
+    let hasAutoScrolled = false;
+    
+    const schedule = [
+        { time: "06:00", duration: 30, activity: "Staff Reveille" },
+        { time: "06:30", duration: 30, activity: "Staff Breakfast" },
+        { time: "07:00", duration: 60, activity: "Participants Check-In &amp; Patrol Assessments" },
+        { time: "08:00", duration: 15, activity: "Gilwell Field Troop Assembly" },
+        { time: "08:15", duration: 90, activity: "Move to Outdoor Experience" },
+        { time: "09:45", duration: 50, activity: "Embrace &amp; Lead Change (Troop Session)" },
+        { time: "10:35", duration: 10, activity: "10-min Break" },
+        { time: "10:45", duration: 60, activity: "Create a Culture Train Them Trust Them Let Them Lead (Troop Session)" },
+        { time: "11:45", duration: 15, activity: "15-min Break" },
+        { time: "12:00", duration: 30, activity: "Lunch" },
+        { time: "12:30", duration: 30, activity: "Patrol Leaders Council" },
+        { time: "13:00", duration: 80, activity: "Problem Solving Round Robin" },
+        { time: "14:20", duration: 20, activity: "Problem Solving (Troop Session) - Youth led" },
+        { time: "14:40", duration: 10, activity: "Problem-Solving Application (candelabra)" },
+        { time: "14:50", duration: 10, activity: "10-min Break" },
+        { time: "15:00", duration: 15, activity: "Leadership Connections (Patrol Session)" },
+        { time: "15:15", duration: 10, activity: "15-min Break" },
+        { time: "15:25", duration: 60, activity: "Patrol Leadership Quest (Troop Session)" },
+        { time: "16:25", duration: 5, activity: "Retire colors (Program - Fox Patrol)" },
+        { time: "18:30", duration: 30, activity: "Staff Dinner" },
+        { time: "21:00", duration: 120, activity: "Staff Meeting" },
+        { time: "23:00", duration: 120, activity: "Lights Out" }
+    ];
+
+    function parseTime(timeStr) {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
+
+    function formatTime(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+    }
+
+    function getCurrentActivity(currentMinutes) {
+        if (isManualMode) {
+            if (manualCurrentActivity >= 0 && manualCurrentActivity < schedule.length) {
+                return { current: schedule[manualCurrentActivity], next: schedule[manualCurrentActivity + 1] || null, currentIndex: manualCurrentActivity };
+            }
+        }
+        
+        const adjustedMinutes = currentMinutes + scheduleOffset;
+        
+        for (let i = 0; i < schedule.length; i++) {
+            const startMinutes = parseTime(schedule[i].time);
+            const endMinutes = startMinutes + schedule[i].duration;
+            
+            if (adjustedMinutes >= startMinutes && adjustedMinutes < endMinutes) {
+                return { current: schedule[i], next: schedule[i + 1] || null, currentIndex: i };
+            }
+        }
+        
+        for (let i = 0; i < schedule.length - 1; i++) {
+            const currentEnd = parseTime(schedule[i].time) + schedule[i].duration;
+            const nextStart = parseTime(schedule[i + 1].time);
+            
+            if (adjustedMinutes >= currentEnd && adjustedMinutes < nextStart) {
+                return { current: { time: "", duration: 0, activity: "Free Time" }, next: schedule[i + 1], currentIndex: -1 };
+            }
+        }
+        
+        return { current: { time: "", duration: 0, activity: "Day Complete" }, next: null, currentIndex: -1 };
+    }
+
+    function setAutoMode() {
+        isManualMode = false;
+        hasAutoScrolled = false; // Allow auto-scroll when switching modes
+        document.getElementById('auto-btn').classList.add('active');
+        document.getElementById('manual-btn').classList.remove('active');
+        document.getElementById('manual-controls').style.display = 'none';
+        updateStatusDisplay();
+    }
+
+    function setManualMode() {
+        isManualMode = true;
+        hasAutoScrolled = false; // Allow auto-scroll when switching modes
+        document.getElementById('auto-btn').classList.remove('active');
+        document.getElementById('manual-btn').classList.add('active');
+        document.getElementById('manual-controls').style.display = 'flex';
+        
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const autoActivity = getCurrentActivityAuto(currentMinutes);
+        manualCurrentActivity = autoActivity.currentIndex;
+        updateStatusDisplay();
+    }
+
+    function getCurrentActivityAuto(currentMinutes) {
+        for (let i = 0; i < schedule.length; i++) {
+            const startMinutes = parseTime(schedule[i].time);
+            const endMinutes = startMinutes + schedule[i].duration;
+            
+            if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+                return { current: schedule[i], next: schedule[i + 1] || null, currentIndex: i };
+            }
+        }
+        return { currentIndex: -1 };
+    }
+
+    function skipActivity() {
+        if (isManualMode && manualCurrentActivity < schedule.length - 1) {
+            manualCurrentActivity++;
+            updateStatusDisplay();
+        }
+    }
+
+    function endCurrentActivity() {
+        if (isManualMode && manualCurrentActivity < schedule.length - 1) {
+            manualCurrentActivity++;
+            updateStatusDisplay();
+        }
+    }
+
+    function adjustTime(minutes) {
+        scheduleOffset += minutes;
+        adjustmentCount++;
+        updateStatusDisplay();
+    }
+
+    function resetToSchedule() {
+        scheduleOffset = 0;
+        adjustmentCount = 0;
+        hasAutoScrolled = false; // Allow auto-scroll when resetting
+        if (isManualMode) {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const autoActivity = getCurrentActivityAuto(currentMinutes);
+            manualCurrentActivity = autoActivity.currentIndex;
+        }
+        updateStatusDisplay();
+    }
+
+    function updateStatusDisplay() {
+        const statusElement = document.getElementById('schedule-status');
+        const counterElement = document.getElementById('adjustment-counter');
+        
+        counterElement.textContent = `Adjustments: ${adjustmentCount}`;
+        
+        if (isManualMode) {
+            statusElement.textContent = 'Manual Control Active';
+            statusElement.className = 'status-display behind';
+        } else if (scheduleOffset === 0) {
+            statusElement.textContent = 'Following Real Time - On Schedule';
+            statusElement.className = 'status-display on-time';
+        } else if (scheduleOffset > 0) {
+            statusElement.textContent = `Running ${scheduleOffset} min AHEAD of schedule`;
+            statusElement.className = 'status-display ahead';
+        } else {
+            statusElement.textContent = `Running ${Math.abs(scheduleOffset)} min BEHIND schedule`;
+            statusElement.className = 'status-display behind';
+        }
+    }
+
+    function updateTime() {
+        const now = new Date();
+        const militaryTime = now.toLocaleString("en-US", { timeZone: "America/Chicago", hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('current-time').textContent = militaryTime;
+        
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentSeconds = currentMinutes * 60 + now.getSeconds();
+        const activityInfo = getCurrentActivity(currentMinutes);
+        
+        document.getElementById('current-activity').textContent = activityInfo.current.activity;
+        
+        if (activityInfo.current.time) {
+            const startMinutes = parseTime(activityInfo.current.time);
+            const endMinutes = startMinutes + activityInfo.current.duration;
+            const timeRange = `${formatTime(startMinutes)} - ${formatTime(endMinutes)}`;
+            
+            document.getElementById('current-activity-header').textContent = `Current Activity: ${timeRange}`;
+            
+            if (activityInfo.next) {
+                const nextStartMinutes = parseTime(activityInfo.next.time);
+                const adjustedNextStartMinutes = nextStartMinutes - scheduleOffset;
+                const nextStartSeconds = adjustedNextStartMinutes * 60;
+                const timeToNext = nextStartSeconds - currentSeconds;
+                
+                if (timeToNext > 0) {
+                    const minutes = Math.floor(timeToNext / 60);
+                    const seconds = timeToNext % 60;
+                    document.getElementById('current-countdown').textContent = `Next activity starts in: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    document.getElementById('current-countdown').textContent = "Next activity should have started";
+                }
+            } else {
+                document.getElementById('current-countdown').textContent = "No more activities scheduled";
+            }
+        } else {
+            document.getElementById('current-activity-header').textContent = "Current Activity:";
+            document.getElementById('current-countdown').textContent = "";
+        }
+        
+        if (activityInfo.next) {
+            const nextStartMinutes = parseTime(activityInfo.next.time);
+            const nextEndMinutes = nextStartMinutes + activityInfo.next.duration;
+            const nextTimeRange = `${formatTime(nextStartMinutes)} - ${formatTime(nextEndMinutes)}`;
+            
+            document.getElementById('next-activity-header').textContent = `Next Activity: ${nextTimeRange}`;
+            document.getElementById('next-activity').textContent = activityInfo.next.activity;
+        } else {
+            document.getElementById('next-activity-header').textContent = "Next Activity:";
+            document.getElementById('next-activity').textContent = "No more activities scheduled";
+        }
+        
+        updateScheduleDisplay(currentMinutes, activityInfo.currentIndex);
+        updateStatusDisplay();
+    }
+    
+    function updateScheduleDisplay(currentMinutes, currentIndex) {
+        const scheduleContainer = document.getElementById('full-schedule');
+        scheduleContainer.innerHTML = '';
+        
+        schedule.forEach((item, index) => {
+            const scheduleItem = document.createElement('div');
+            scheduleItem.className = 'schedule-item';
+            scheduleItem.id = `schedule-item-${index}`;
+            
+            const startMinutes = parseTime(item.time);
+            const endMinutes = startMinutes + item.duration;
+            
+            if (endMinutes <= currentMinutes) {
+                scheduleItem.classList.add('completed');
+            } else if (index === currentIndex) {
+                scheduleItem.classList.add('current');
+            } else {
+                scheduleItem.classList.add('upcoming');
+            }
+            
+            scheduleItem.innerHTML = `
+                <div class="schedule-time">${formatTime(startMinutes)} - ${formatTime(endMinutes)}</div>
+                <div class="schedule-activity">${item.activity}</div>
+                <div class="schedule-duration">${item.duration}min</div>
+            `;
+            
+            scheduleContainer.appendChild(scheduleItem);
+        });
+        
+        if (currentIndex >= 0) {
+            const currentElement = document.getElementById(`schedule-item-${currentIndex}`);
+            if (currentElement && !hasAutoScrolled) {
+                currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                hasAutoScrolled = true;
+            }
+        }
+    }
+    
+    updateTime();
+    setInterval(updateTime, 1000);
+    
+    // Set generation timestamp
+    document.getElementById('generation-time').textContent = "8/11/2025, 9:58:57 AM";
+    </script>
+</body>
+</html>

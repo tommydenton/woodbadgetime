@@ -1,0 +1,38 @@
+6:00 AM,60,Reveille
+7:00 AM,50,Breakfast & Patrol Assessments
+7:50 AM,10,5 Minute break
+8:00 AM,15,Gilwell Field Troop Assembly
+8:15 AM,5,Travel
+8:20 AM,20,Pre-opening What Are You Most Afraid Of
+8:40 AM,15,Opening Ceremony Scout Oath & Law
+8:55 AM,10,Skills Instruction
+9:05 AM,20,Patrol Meeting
+9:25 AM,20,Interpatrol Activity First Aid Game
+9:45 AM,5,Closing Scoutmaster Minute
+9:50 AM,10,10-min Break
+10:00 AM,60,Patrol Leaders Council In the Round
+11:00 AM,10,10-min Break
+11:10 AM,50,Learn to Listen Listen to Learn (Patrol Session)
+12:00 PM,10,10-min Break
+12:10 PM,40,Lunch
+12:50 PM,10,10-min Break
+1:00 PM,60,Plan With a Bias for Action (Troop Session)
+2:00 PM,60,Planning Application (Rockets)
+3:00 PM,15,15-min Break
+3:15 PM,65,Develop Individuals & Teams (Troop Session)
+4:20 PM,15,15-min Break
+4:35 PM,10,Retire Colors (Program Patrol)
+4:45 PM,15,Leadership Connections (Patrol Session)
+5:00 PM,10,10-min Break
+5:10 PM,25,Ticket Time (Patrol Session)
+5:35 PM,5,5-min Break
+5:40 PM,15,Patrol Meetings - Leadership Connections 2
+5:55 PM,5,5-min Break
+6:00 PM,50,Dinner
+6:50 PM,10,10-min Break
+7:00 PM,50,Know the Territory (Troop Session)
+7:50 PM,20,20-min Break
+8:10 PM,50,Troop Campfire Program
+9:00 PM,30,Cracker Barrel
+9:30 PM,90,Staff Meeting
+11:00 PM,120,Lights Out

@@ -1,0 +1,35 @@
+6:00 AM,30,Staff Reveille
+6:30 AM,30,Breakfast
+7:00 AM,30,Participant Check In
+7:30 AM,15,Team Formation and Orientation Walk
+7:45 AM,60,Cub Scout Adventures and Tour
+8:45 AM,15,Gilwell Field Pack Assembly
+9:00 AM,15,10-min break
+9:15 AM,10,Course Overview (Pack Session)
+9:25 AM,30,Drive Vision Mission & Values (Pack Presentation)
+9:55 AM,10,10-min break
+10:05 AM,45,Know Thyself (Den Session)
+10:50 AM,10,10-min Break
+11:00 AM,60,The Ticket (Pack Session)
+12:00 PM,10,10-min Break
+12:10 PM,45,Opening Luncheon
+12:55 PM,10,10-min Break
+1:05 PM,85,Den Meetings
+2:30 PM,10,10-min break
+2:40 PM,70,Communicate Effectively (Den Session)
+3:50 PM,10,Informal Ticket Time 1
+4:00 PM,10,10-min Break
+4:10 PM,45,Include & Optimize Diverse Talent (Pack Session)
+4:55 PM,10,Informal Ticket Time 2
+5:05 PM,0,Retire Colors (Den 1)
+5:05 PM,10,10-min Break
+5:15 PM,65,Blue & Gold Banquet & Pack Meeting
+6:20 PM,15,15-min Break
+6:35 PM,30,Getting to Know You Game (Patrol Session)
+7:05 PM,10,10-min Break
+7:15 PM,25,Leadership Connections (Patrol Session)
+7:40 PM,10,10-min Break
+7:50 PM,40,Model Campfire - Baden Powell Story
+8:30 PM,30,Cracker Barrel
+9:00 PM,120,Staff Meeting
+11:00 PM,120,Lights Out

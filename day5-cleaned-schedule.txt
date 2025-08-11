@@ -1,0 +1,17 @@
+6:00 AM,50,Staff Reveille
+7:00 AM,50,Breakfast & Patrol Self-Assessments
+8:00 AM,15,Gilwell Field Troop Assembly
+8:15 AM,5,5-minute break
+8:20 AM,20,Interfaith Service (Troop Session)
+8:40 AM,95,Break Camp & Return from Outdoor Experience
+10:15 AM,95,Patrol Leadership Quest Presentations (Troop Session)
+11:50 AM,10,10-minute break
+12:00 PM,75,Closing Luncheon
+1:15 PM,15,15-min Break
+1:30 PM,30,Use the Tools (Troop Session)
+2:00 PM,10,10-min Break
+2:10 PM,80,Inspire the Heart (Troop Session)
+3:30 PM,20,Course Assessment
+3:50 PM,30,Closing Gilwell Assembly
+4:20 PM,30,Participants Depart
+4:50 PM,30,Staff Meeting

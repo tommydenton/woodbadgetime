@@ -1,0 +1,28 @@
+6:00 AM,60,Reveille
+7:00 AM,50,Breakfast & Patrol Self-Assessments
+7:50 AM,10,10-min Break
+8:00 AM,15,Gilwell Field Troop Assembly
+8:15 AM,5,5-min Break
+8:20 AM,15,Interfaith Worship Service (Instructional)
+8:35 AM,30,Interfaith Worship Service
+9:05 AM,35,Troop and Patrol Photos
+9:40 AM,10,10-min Break
+9:50 AM,65,Troop Meeting
+10:55 AM,5,5-min Break
+11:00 AM,50,Apply Interpersonal Savvy (Troop Session)
+11:50 AM,10,10-min Break
+12:00 PM,40,Lunch
+12:40 PM,30,Patrol Leaders Council
+1:10 PM,10,10-min Break
+1:20 PM,20,Patrol Meetings
+1:40 PM,50,Manage Conversations (Patrol Session)
+2:30 PM,10,10-min Break
+2:40 PM,50,Coach & Mentor (Troop Session)
+3:30 PM,10,10-min Break
+3:40 PM,15,Leadership Connections (Patrol Session)
+3:55 PM,15,Ticket Time
+4:10 PM,10,10-min Break
+4:20 PM,30,Day 3 Recap (Troop Session)
+4:50 PM,10,10-min Break
+5:00 PM,15,Closing Gilwell Field Assembly
+5:15 PM,45,Staff Meeting

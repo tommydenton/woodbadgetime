@@ -1,0 +1,22 @@
+6:00 AM,30,Staff Reveille
+6:30 AM,30,Staff Breakfast
+7:00 AM,60,Participants Check-In & Patrol Assessments
+8:00 AM,15,Gilwell Field Troop Assembly
+8:15 AM,90,Move to Outdoor Experience
+9:45 AM,50,Embrace & Lead Change (Troop Session)
+10:35 AM,10,10-min Break
+10:45 AM,60,Create a Culture Train Them Trust Them Let Them Lead (Troop Session)
+11:45 AM,15,15-min Break
+12:00 PM,30,Lunch
+12:30 PM,30,Patrol Leaders Council
+1:00 PM,80,Problem Solving Round Robin
+2:20 PM,20,Problem Solving (Troop Session) - Youth led
+2:40 PM,10,Problem-Solving Application (candelabra)
+2:50 PM,10,10-min Break
+3:00 PM,15,Leadership Connections (Patrol Session)
+3:15 PM,10,15-min Break
+3:25 PM,60,Patrol Leadership Quest (Troop Session)
+4:25 PM,5,Retire colors (Program - Fox Patrol)
+6:30 PM,30,Staff Dinner
+9:00 PM,120,Staff Meeting
+11:00 PM,120,Lights Out
