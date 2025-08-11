@@ -1,7 +1,8 @@
 /*
  * Wood Badge Schedule Admin Portal - JavaScript
- * Version: 1.0.0
+ * Version: 1.7.0
  * Last Updated: August 10, 2025
+ * Updated admin portal to match terminal-style green theme
  */
 
 // Data storage
@@ -27,50 +28,78 @@ function switchTab(tabName) {
 
 // Parse time from various formats
 function parseTime(timeStr) {
+    console.log(`[TIME DEBUG] Parsing time: "${timeStr}"`);
     timeStr = timeStr.trim();
+    console.log(`[TIME DEBUG] After trim: "${timeStr}"`);
+    console.log(`[TIME DEBUG] Character codes:`, Array.from(timeStr).map(c => c.charCodeAt(0)));
     
     // Handle 12-hour format (6:00 AM, 6:00 PM)
     const twelveHourMatch = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
     if (twelveHourMatch) {
+        console.log(`[TIME DEBUG] Matched 12-hour format:`, twelveHourMatch);
         let hours = parseInt(twelveHourMatch[1]);
         const minutes = parseInt(twelveHourMatch[2]);
         const period = twelveHourMatch[3].toUpperCase();
         
+        console.log(`[TIME DEBUG] Hours: ${hours}, Minutes: ${minutes}, Period: ${period}`);
+        
         if (period === 'PM' && hours !== 12) hours += 12;
         if (period === 'AM' && hours === 12) hours = 0;
         
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        const result = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        console.log(`[TIME DEBUG] 12-hour result: "${result}"`);
+        return result;
     }
     
     // Handle 24-hour format (18:00, 6:00)
     const twentyFourHourMatch = timeStr.match(/^(\d{1,2}):(\d{2})$/);
     if (twentyFourHourMatch) {
+        console.log(`[TIME DEBUG] Matched 24-hour format:`, twentyFourHourMatch);
         const hours = parseInt(twentyFourHourMatch[1]);
         const minutes = parseInt(twentyFourHourMatch[2]);
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        const result = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        console.log(`[TIME DEBUG] 24-hour result: "${result}"`);
+        return result;
     }
     
+    console.log(`[TIME DEBUG] No match found for: "${timeStr}"`);
+    console.log(`[TIME DEBUG] Testing regex patterns:`);
+    console.log(`[TIME DEBUG] 12-hour test:`, /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.test(timeStr));
+    console.log(`[TIME DEBUG] 24-hour test:`, /^(\d{1,2}):(\d{2})$/.test(timeStr));
     return null;
 }
 
 // Parse duration from various formats
 function parseDuration(durationStr) {
+    console.log(`[DURATION DEBUG] Parsing duration: "${durationStr}"`);
     durationStr = durationStr.trim();
+    console.log(`[DURATION DEBUG] After trim: "${durationStr}"`);
+    console.log(`[DURATION DEBUG] Character codes:`, Array.from(durationStr).map(c => c.charCodeAt(0)));
     
     // Handle H:MM format (1:30, 0:30)
     const hmmMatch = durationStr.match(/^(\d+):(\d{2})$/);
     if (hmmMatch) {
+        console.log(`[DURATION DEBUG] Matched H:MM format:`, hmmMatch);
         const hours = parseInt(hmmMatch[1]);
         const minutes = parseInt(hmmMatch[2]);
-        return hours * 60 + minutes;
+        const result = hours * 60 + minutes;
+        console.log(`[DURATION DEBUG] H:MM result: ${result} minutes`);
+        return result;
     }
     
     // Handle minutes only (30, 60)
     const minutesMatch = durationStr.match(/^(\d+)$/);
     if (minutesMatch) {
-        return parseInt(minutesMatch[1]);
+        console.log(`[DURATION DEBUG] Matched minutes format:`, minutesMatch);
+        const result = parseInt(minutesMatch[1]);
+        console.log(`[DURATION DEBUG] Minutes result: ${result} minutes`);
+        return result;
     }
     
+    console.log(`[DURATION DEBUG] No match found for: "${durationStr}"`);
+    console.log(`[DURATION DEBUG] Testing regex patterns:`);
+    console.log(`[DURATION DEBUG] H:MM test:`, /^(\d+):(\d{2})$/.test(durationStr));
+    console.log(`[DURATION DEBUG] Minutes test:`, /^(\d+)$/.test(durationStr));
     return null;
 }
 
@@ -79,17 +108,41 @@ function parseSchedule(day) {
     const textInput = document.getElementById(`text-input-${day}`);
     const text = textInput.value.trim();
     
+    console.log(`[PARSE DEBUG] Starting parseSchedule for ${day}`);
+    console.log(`[PARSE DEBUG] Raw input text (${text.length} characters):`, text);
+    console.log(`[PARSE DEBUG] Text preview:`, text.substring(0, 200) + (text.length > 200 ? '...' : ''));
+    
     if (!text) {
+        console.log(`[PARSE DEBUG] No text provided, showing error`);
         showMessage(day, 'Please enter schedule data', 'error');
         return;
     }
     
     try {
         const schedule = [];
+        let lines = []; // Declare lines variable in the main scope
         
-        // Try CSV format first
-        if (text.includes(',')) {
-            const lines = text.split('\n').filter(line => line.trim());
+        // Try CSV format first - but be smarter about detection
+        // Check if it looks like CSV by seeing if we have time,duration,activity pattern
+        const firstLine = text.split('\n')[0]?.trim();
+        const hasCommas = text.includes(',');
+        let looksLikeCSV = false;
+        
+        if (hasCommas && firstLine) {
+            const parts = firstLine.split(',').map(part => part.trim());
+            if (parts.length >= 3) {
+                const time = parseTime(parts[0]);
+                const duration = parseDuration(parts[1]);
+                // If first line parses successfully as CSV, assume CSV format
+                looksLikeCSV = time !== null && duration !== null;
+                console.log(`[PARSE DEBUG] CSV detection: hasCommas=${hasCommas}, firstLineParts=${parts.length}, timeParses=${time !== null}, durationParses=${duration !== null}, looksLikeCSV=${looksLikeCSV}`);
+            }
+        }
+        
+        if (looksLikeCSV) {
+            console.log(`[PARSE DEBUG] Detected CSV format (smart detection)`);
+            lines = text.split('\n').filter(line => line.trim());
+            console.log(`[PARSE DEBUG] CSV lines after filtering:`, lines);
             
             for (const line of lines) {
                 const parts = line.split(',').map(part => part.trim());
@@ -104,38 +157,64 @@ function parseSchedule(day) {
                 }
             }
         } else {
+            console.log(`[PARSE DEBUG] No comma detected, trying three-line format`);
+            
             // Try three-line format
-            const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+            lines = text.split('\n').map(line => line.trim()).filter(line => line);
+            console.log(`[PARSE DEBUG] Split and filtered lines (${lines.length} total):`, lines);
             
             // Check if we have groups of 3 lines
             if (lines.length % 3 !== 0) {
+                console.log(`[PARSE DEBUG] Line count error: ${lines.length} is not divisible by 3`);
                 throw new Error(`Expected groups of 3 lines (time, duration, activity), but got ${lines.length} lines. Please check your format.`);
             }
+            
+            console.log(`[PARSE DEBUG] Processing ${lines.length / 3} groups of 3 lines`);
             
             for (let i = 0; i < lines.length; i += 3) {
                 const timeStr = lines[i];
                 const durationStr = lines[i + 1];
                 const activity = lines[i + 2];
                 
+                console.log(`[PARSE DEBUG] Group ${(i/3) + 1}:`);
+                console.log(`  Time: "${timeStr}"`);
+                console.log(`  Duration: "${durationStr}"`);
+                console.log(`  Activity: "${activity}"`);
+                
                 const time = parseTime(timeStr);
                 const duration = parseDuration(durationStr);
                 
+                console.log(`  Parsed time: ${time}`);
+                console.log(`  Parsed duration: ${duration}`);
+                
                 if (!time) {
-                    throw new Error(`Invalid time format: "${timeStr}" at line ${i + 1}`);
+                    console.log(`[PARSE DEBUG] Time parsing failed for: "${timeStr}"`);
+                    console.log(`[PARSE DEBUG] Continuing to next item instead of throwing error`);
+                    continue; // Skip this item instead of throwing error
                 }
                 if (duration === null) {
-                    throw new Error(`Invalid duration format: "${durationStr}" at line ${i + 2}`);
+                    console.log(`[PARSE DEBUG] Duration parsing failed for: "${durationStr}"`);
+                    console.log(`[PARSE DEBUG] Continuing to next item instead of throwing error`);
+                    continue; // Skip this item instead of throwing error
                 }
                 if (!activity) {
-                    throw new Error(`Missing activity at line ${i + 3}`);
+                    console.log(`[PARSE DEBUG] Activity is empty: "${activity}"`);
+                    console.log(`[PARSE DEBUG] Continuing to next item instead of throwing error`);
+                    continue; // Skip this item instead of throwing error
                 }
                 
+                console.log(`  ✓ Successfully parsed item: ${time}, ${duration}min, "${activity}"`);
                 schedule.push({ time, duration, activity });
             }
         }
         
+        console.log(`[PARSE DEBUG] Final schedule array (${schedule.length} items):`, schedule);
+        
         if (schedule.length === 0) {
-            throw new Error('No valid schedule items found. Please check the format.');
+            console.log(`[PARSE DEBUG] No schedule items were successfully parsed`);
+            console.log(`[PARSE DEBUG] Total lines processed: ${lines.length}`);
+            console.log(`[PARSE DEBUG] Expected groups: ${lines.length / 3}`);
+            throw new Error(`No valid schedule items found. Processed ${lines.length / 3} groups but none were valid. Check the console for parsing details.`);
         }
         
         // Sort schedule by time
@@ -145,12 +224,16 @@ function parseSchedule(day) {
             return (timeA[0] * 60 + timeA[1]) - (timeB[0] * 60 + timeB[1]);
         });
         
+        console.log(`[PARSE DEBUG] Sorted schedule:`, schedule);
+        
         scheduleData[day] = schedule;
         updatePreview(day);
         updateOverview();
         showMessage(day, `Successfully parsed ${schedule.length} activities`, 'success');
         
     } catch (error) {
+        console.error(`[PARSE DEBUG] Error occurred:`, error);
+        console.error(`[PARSE DEBUG] Error stack:`, error.stack);
         showMessage(day, `Error parsing schedule: ${error.message}`, 'error');
     }
 }
@@ -391,10 +474,14 @@ function exportDay(day) {
     
     const originalTemplate = getOriginalTemplate();
     const dayNumber = day.replace('day', '');
+    const generationTime = new Date().toLocaleString();
+    
     const newHTML = originalTemplate
         .replace(/Wood Badge Time/g, `Wood Badge Day ${dayNumber} Time`)
         .replace(/const schedule = \[[\s\S]*?\];/, `const schedule = [\n${jsSchedule}\n    ];`)
-        .replace(/SR\^2 Scout Camp, Texas/g, `Wood Badge Day ${dayNumber} - SR^2 Scout Camp, Texas`);
+        .replace(/SR\^2 Scout Camp, Texas/g, `Wood Badge Day ${dayNumber} - SR^2 Scout Camp, Texas`)
+        .replace(/document\.getElementById\('generation-time'\)\.textContent = new Date\(\)\.toLocaleString\(\);/, 
+                `document.getElementById('generation-time').textContent = "${generationTime}";`);
     
     const blob = new Blob([newHTML], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -435,6 +522,12 @@ function getOriginalTemplate() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Cache Busting Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>Official Wood Badge Time</title>
     <style>
         body { background-color: #000000; color: #00ff00; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
@@ -467,6 +560,7 @@ function getOriginalTemplate() {
         .behind { color: #ff6600; }
         .on-time { color: #ffff00; }
         .reset-btn { background-color: #ffff00; color: #000000; }
+        .version-info { margin-top: 20px; padding: 15px; border: 1px solid #333; border-radius: 5px; background-color: #111; font-size: 14px; color: #999; }
     </style>
 </head>
 <body>
@@ -513,11 +607,18 @@ function getOriginalTemplate() {
         <small>Offline capable - no internet connection required</small>
     </div>
     
+    <div class="version-info">
+        <strong>Timer Version:</strong> 1.3.0<br>
+        <strong>Generated:</strong> <span id="generation-time"></span><br>
+        <strong>Admin Portal Version:</strong> 1.7.0
+    </div>
+    
     <script>
     let isManualMode = false;
     let scheduleOffset = 0;
     let manualCurrentActivity = -1;
     let adjustmentCount = 0;
+    let hasAutoScrolled = false;
     
     const schedule = [
         { time: "06:00", duration: 30, activity: "Staff Reveille" }
@@ -566,6 +667,7 @@ function getOriginalTemplate() {
 
     function setAutoMode() {
         isManualMode = false;
+        hasAutoScrolled = false; // Allow auto-scroll when switching modes
         document.getElementById('auto-btn').classList.add('active');
         document.getElementById('manual-btn').classList.remove('active');
         document.getElementById('manual-controls').style.display = 'none';
@@ -574,6 +676,7 @@ function getOriginalTemplate() {
 
     function setManualMode() {
         isManualMode = true;
+        hasAutoScrolled = false; // Allow auto-scroll when switching modes
         document.getElementById('auto-btn').classList.remove('active');
         document.getElementById('manual-btn').classList.add('active');
         document.getElementById('manual-controls').style.display = 'flex';
@@ -620,6 +723,7 @@ function getOriginalTemplate() {
     function resetToSchedule() {
         scheduleOffset = 0;
         adjustmentCount = 0;
+        hasAutoScrolled = false; // Allow auto-scroll when resetting
         if (isManualMode) {
             const now = new Date();
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -736,14 +840,18 @@ function getOriginalTemplate() {
         
         if (currentIndex >= 0) {
             const currentElement = document.getElementById(\`schedule-item-\${currentIndex}\`);
-            if (currentElement) {
+            if (currentElement && !hasAutoScrolled) {
                 currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                hasAutoScrolled = true;
             }
         }
     }
     
     updateTime();
     setInterval(updateTime, 1000);
+    
+    // Set generation timestamp
+    document.getElementById('generation-time').textContent = new Date().toLocaleString();
     </script>
 </body>
 </html>`;

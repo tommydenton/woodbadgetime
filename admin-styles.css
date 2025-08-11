@@ -1,7 +1,8 @@
 /*
  * Wood Badge Schedule Admin Portal - CSS Styles
- * Version: 1.0.0
+ * Version: 1.2.0
  * Last Updated: August 10, 2025
+ * Updated to match terminal-style green theme from timer
  */
 
 * {
@@ -11,44 +12,42 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    background-color: #000000;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #ffffff;
+    font-family: Arial, sans-serif;
+    color: #00ff00;
     padding: 20px;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
     padding: 30px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
 }
 
 .header {
     text-align: center;
     margin-bottom: 40px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
 }
 
 .header h1 {
     font-size: 2.5em;
     margin-bottom: 10px;
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #00ff00;
 }
 
 .header p {
     font-size: 1.2em;
-    opacity: 0.9;
+    color: #00ff00;
+    opacity: 0.8;
 }
 
 .tabs {
@@ -59,27 +58,26 @@ body {
 }
 
 .tab {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    color: #00ff00;
     padding: 15px 25px;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: bold;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
 }
 
 .tab:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
 .tab.active {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background: #00ff00;
     color: #000000;
-    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .tab-content {
@@ -97,8 +95,9 @@ body {
 }
 
 .input-section {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
     padding: 25px;
     margin-bottom: 30px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -130,24 +129,24 @@ body {
 }
 
 .import-method {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
     padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .import-method h4 {
-    color: #00ff7f;
+    color: #ffff00;
     margin-bottom: 10px;
 }
 
 textarea {
     width: 100%;
     height: 200px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 5px;
+    color: #00ff00;
     padding: 15px;
     font-family: 'Courier New', monospace;
     font-size: 14px;
@@ -155,13 +154,13 @@ textarea {
 }
 
 textarea::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 255, 0, 0.5);
 }
 
 .file-input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px dashed #00ff00;
+    border-radius: 5px;
     padding: 30px;
     text-align: center;
     cursor: pointer;
@@ -169,8 +168,9 @@ textarea::placeholder {
 }
 
 .file-input:hover {
-    border-color: #FFD700;
-    background: rgba(255, 215, 0, 0.1);
+    border-color: #ffff00;
+    background: rgba(255, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
 }
 
 .file-input input {
@@ -180,56 +180,72 @@ textarea::placeholder {
 .file-input-text {
     font-size: 16px;
     margin-bottom: 10px;
+    color: #00ff00;
 }
 
 .file-info {
     font-size: 14px;
+    color: #00ff00;
     opacity: 0.7;
 }
 
 .btn {
-    background: linear-gradient(45deg, #00ff7f, #00cc66);
-    border: none;
+    background: #00ff00;
+    border: 2px solid #00ff00;
     color: #000000;
     padding: 12px 25px;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: bold;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 255, 127, 0.3);
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 255, 127, 0.4);
+    background: rgba(0, 255, 0, 0.8);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .btn-secondary {
-    background: linear-gradient(45deg, #6c757d, #495057);
-    color: #ffffff;
-    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ffff00;
+    color: #ffff00;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 0, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
 }
 
 .btn-danger {
-    background: linear-gradient(45deg, #dc3545, #c82333);
-    color: #ffffff;
-    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff6600;
+    color: #ff6600;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 102, 0, 0.1);
+    box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #007bff, #0056b3);
-    color: #ffffff;
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    background: #00ff00;
+    border: 2px solid #00ff00;
+    color: #000000;
+}
+
+.btn-primary:hover {
+    background: rgba(0, 255, 0, 0.8);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .schedule-preview {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 5px;
     padding: 20px;
     max-height: 600px;
     overflow-y: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .schedule-item {
@@ -238,19 +254,19 @@ textarea::placeholder {
     align-items: center;
     padding: 12px;
     margin: 8px 0;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border-left: 4px solid #FFD700;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
 }
 
 .schedule-time {
     font-weight: bold;
-    color: #FFD700;
+    color: #ffff00;
     min-width: 100px;
 }
 
 .schedule-duration {
-    color: #00ff7f;
+    color: #00ffff;
     min-width: 60px;
     text-align: center;
 }
@@ -258,6 +274,7 @@ textarea::placeholder {
 .schedule-activity {
     flex-grow: 1;
     margin: 0 15px;
+    color: #00ff00;
 }
 
 .action-buttons {
@@ -275,26 +292,27 @@ textarea::placeholder {
 }
 
 .day-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
     padding: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
 
 .day-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    border-color: #ffff00;
 }
 
 .day-card h4 {
-    color: #FFD700;
+    color: #ffff00;
     margin-bottom: 15px;
     font-size: 1.2em;
 }
 
 .day-info {
     margin-bottom: 15px;
+    color: #00ff00;
     opacity: 0.8;
 }
 
@@ -307,46 +325,59 @@ textarea::placeholder {
 }
 
 .status-configured {
-    background: #00ff7f;
+    background: #00ff00;
 }
 
 .status-empty {
-    background: #ff6b6b;
+    background: #ff6600;
 }
 
 .format-example {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
     padding: 15px;
     margin: 15px 0;
     font-family: 'Courier New', monospace;
     font-size: 13px;
-    border-left: 4px solid #FFD700;
+    color: #00ff00;
 }
 
 .warning {
-    background: rgba(255, 193, 7, 0.1);
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    border-radius: 8px;
+    background: rgba(255, 255, 0, 0.1);
+    border: 1px solid #ffff00;
+    border-radius: 5px;
     padding: 15px;
     margin: 15px 0;
-    color: #ffc107;
+    color: #ffff00;
 }
 
 .success {
-    background: rgba(40, 167, 69, 0.1);
-    border: 1px solid rgba(40, 167, 69, 0.3);
-    border-radius: 8px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
     padding: 15px;
     margin: 15px 0;
-    color: #28a745;
+    color: #00ff00;
 }
 
 .error {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.3);
-    border-radius: 8px;
+    background: rgba(255, 102, 0, 0.1);
+    border: 1px solid #ff6600;
+    border-radius: 5px;
     padding: 15px;
     margin: 15px 0;
-    color: #dc3545;
+    color: #ff6600;
+}
+
+/* Version Info Styling */
+.version-info {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #00ff00;
+    text-align: center;
 }
