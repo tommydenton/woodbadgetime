@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Wood Badge Time</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        a {
+            color: #00ff00;
+            text-decoration: underline;
+        }
+        a:hover {
+            color: #ffffff;
+        }
+        .time-display {
+            font-size: 72px;
+            margin: 30px 0;
+        }
+        .countdown-display {
+            font-size: 48px;
+            margin: 30px 0;
+            color: #ffff00;
+        }
+        .activity-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+        }
+        .current-activity {
+            font-size: 24px;
+            color: #ff6600;
+            margin: 20px 0;
+        }
+        .next-activity {
+            font-size: 36px;
+            color: #00ffff;
+            margin: 20px 0;
+        }
+        .activity-time {
+            font-size: 18px;
+            color: #ffff00;
+        }
+        .credit {
+            margin-top: 40px;
+            font-size: 18px;
+        }
+        .section {
+            margin: 40px 0;
+        }
+        .schedule-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .schedule-item.completed {
+            text-decoration: line-through;
+            color: #666666;
+            background-color: #111111;
+        }
+        .schedule-item.current {
+            background-color: #ff6600;
+            color: #000000;
+            font-weight: bold;
+        }
+        .schedule-item.upcoming {
+            color: #00ff00;
+        }
+        .schedule-time {
+            min-width: 120px;
+            text-align: left;
+        }
+        .schedule-activity {
+            flex-grow: 1;
+            text-align: left;
+            margin-left: 20px;
+        }
+        .schedule-duration {
+            min-width: 60px;
+            text-align: right;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .schedule-controls {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ffff00;
+            border-radius: 10px;
+            background-color: #111111;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .control-btn {
+            background-color: #00ff00;
+            color: #000000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .control-btn:hover {
+            background-color: #ffffff;
+        }
+        .control-btn.active {
+            background-color: #ff6600;
+            color: #ffffff;
+        }
+        .status-display {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .adjustment-counter {
+            text-align: center;
+            margin: 5px 0;
+            font-size: 14px;
+            color: #cccccc;
+        }
+        .ahead {
+            color: #00ff00;
+        }
+        .behind {
+            color: #ff6600;
+        }
+        .on-time {
+            color: #ffff00;
+        }
+        .reset-btn {
+            background-color: #ffff00;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h1>Official Wood Badge Time is:</h1>
+        <div class="time-display" id="current-time"></div>
+    </div>
+    
+    <div class="activity-section">
+        <h2 id="current-activity-header">Current Activity:</h2>
+        <div class="current-activity" id="current-activity">Loading...</div>
+        <div class="countdown-display" id="current-countdown"></div>
+        
+        <h3 id="next-activity-header">Next Activity:</h3>
+        <div class="next-activity" id="next-activity">Loading...</div>
+    </div>
+    
+    <div class="schedule-controls">
+        <h3>Schedule Control</h3>
+        <div class="status-display" id="schedule-status">Following Real Time</div>
+        <div class="adjustment-counter" id="adjustment-counter">Adjustments: 0</div>
+        <div class="control-buttons">
+            <button class="control-btn active" id="auto-btn" onclick="setAutoMode()">Auto Track</button>
+            <button class="control-btn" id="manual-btn" onclick="setManualMode()">Manual Control</button>
+            <button class="control-btn reset-btn" onclick="resetToSchedule()">Reset to Schedule</button>
+        </div>
+        <div class="control-buttons" id="manual-controls" style="display: none;">
+            <button class="control-btn" onclick="skipActivity()">Skip Current</button>
+            <button class="control-btn" onclick="adjustTime(-5)">-5 min</button>
+            <button class="control-btn" onclick="adjustTime(-1)">-1 min</button>
+            <button class="control-btn" onclick="adjustTime(1)">+1 min</button>
+            <button class="control-btn" onclick="adjustTime(5)">+5 min</button>
+            <button class="control-btn" onclick="endCurrentActivity()">End Current</button>
+        </div>
+    </div>
+    
+    <div class="schedule-section">
+        <h2>Full Schedule:</h2>
+        <div id="full-schedule"></div>
+    </div>
+    
+    <div class="credit">
+        Time displayed for SR^2 Scout Camp, Texas (Central Time)<br>
+        <small>Offline capable - no internet connection required</small>
+    </div>
+    
+    <script>
+    // Schedule control variables
+    let isManualMode = false;
+    let scheduleOffset = 0; // minutes ahead (+) or behind (-)
+    let manualCurrentActivity = -1;
+    let adjustmentCount = 0; // Track number of time adjustments made
+    
+    // Wood Badge Schedule
+    const schedule = [
+        { time: "06:00", duration: 30, activity: "Staff Reveille" },
+        { time: "06:30", duration: 30, activity: "Breakfast" },
+        { time: "07:00", duration: 30, activity: "Participant Check In" },
+        { time: "07:30", duration: 15, activity: "Team Formation and Orientation Walk" },
+        { time: "07:45", duration: 60, activity: "Cub Scout Adventures and Tour" },
+        { time: "08:45", duration: 15, activity: "Gilwell Field Pack Assembly" },
+        { time: "09:00", duration: 15, activity: "10-min break" },
+        { time: "09:15", duration: 10, activity: "Course Overview (Pack Session)" },
+        { time: "09:25", duration: 30, activity: "Drive Vision, Mission, & Values (Pack Presentation)" },
+        { time: "09:55", duration: 10, activity: "10-min break" },
+        { time: "10:05", duration: 45, activity: "Know Thyself (Den Session)" },
+        { time: "10:50", duration: 10, activity: "10-min Break" },
+        { time: "11:00", duration: 60, activity: "The Ticket (Pack Session)" },
+        { time: "12:00", duration: 10, activity: "10-min Break" },
+        { time: "12:10", duration: 45, activity: "Opening Luncheon" },
+        { time: "12:55", duration: 10, activity: "10-min Break" },
+        { time: "13:05", duration: 85, activity: "Den Meetings" },
+        { time: "14:30", duration: 10, activity: "10-min break" },
+        { time: "14:40", duration: 70, activity: "Communicate Effectively (Den Session)" },
+        { time: "15:50", duration: 10, activity: "Informal Ticket Time 1" },
+        { time: "16:00", duration: 10, activity: "10-min Break" },
+        { time: "16:10", duration: 45, activity: "Include & Optimize Diverse Talent (Pack Session)" },
+        { time: "16:55", duration: 10, activity: "Informal Ticket Time 2" },
+        { time: "17:05", duration: 0, activity: "Retire Colors (Den 1)" },
+        { time: "17:05", duration: 10, activity: "10-min Break" },
+        { time: "17:15", duration: 65, activity: "Blue & Gold Banquet & Pack Meeting" },
+        { time: "18:20", duration: 15, activity: "15-min Break" },
+        { time: "18:35", duration: 30, activity: "Getting to Know You Game (Patrol Session)" },
+        { time: "19:05", duration: 10, activity: "10-min Break" },
+        { time: "19:15", duration: 25, activity: "Leadership Connections (Patrol Session)" },
+        { time: "19:40", duration: 10, activity: "10-min Break" },
+        { time: "19:50", duration: 40, activity: "Model Campfire - Baden Powell Story" },
+        { time: "20:30", duration: 30, activity: "Cracker Barrel" },
+        { time: "21:00", duration: 120, activity: "Staff Meeting" },
+        { time: "23:00", duration: 480, activity: "Lights Out" }
+    ];
+
+    function parseTime(timeStr) {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes; // Convert to minutes since midnight
+    }
+
+    function formatTime(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+    }
+
+    function getCurrentActivity(currentMinutes) {
+        if (isManualMode) {
+            // In manual mode, use the manually set current activity
+            if (manualCurrentActivity >= 0 && manualCurrentActivity < schedule.length) {
+                return {
+                    current: schedule[manualCurrentActivity],
+                    next: schedule[manualCurrentActivity + 1] || null,
+                    currentIndex: manualCurrentActivity
+                };
+            }
+        }
+        
+        // Auto mode - adjust current time by offset
+        const adjustedMinutes = currentMinutes + scheduleOffset;
+        
+        for (let i = 0; i < schedule.length; i++) {
+            const startMinutes = parseTime(schedule[i].time);
+            const endMinutes = startMinutes + schedule[i].duration;
+            
+            if (adjustedMinutes >= startMinutes && adjustedMinutes < endMinutes) {
+                return {
+                    current: schedule[i],
+                    next: schedule[i + 1] || null,
+                    currentIndex: i
+                };
+            }
+        }
+        
+        // If no current activity found, we're between activities or after the last one
+        for (let i = 0; i < schedule.length - 1; i++) {
+            const currentEnd = parseTime(schedule[i].time) + schedule[i].duration;
+            const nextStart = parseTime(schedule[i + 1].time);
+            
+            if (adjustedMinutes >= currentEnd && adjustedMinutes < nextStart) {
+                return {
+                    current: { time: "", duration: 0, activity: "Free Time" },
+                    next: schedule[i + 1],
+                    currentIndex: -1
+                };
+            }
+        }
+        
+        // After all activities
+        return {
+            current: { time: "", duration: 0, activity: "Day Complete" },
+            next: null,
+            currentIndex: -1
+        };
+    }
+
+    // Schedule control functions
+    function setAutoMode() {
+        isManualMode = false;
+        document.getElementById('auto-btn').classList.add('active');
+        document.getElementById('manual-btn').classList.remove('active');
+        document.getElementById('manual-controls').style.display = 'none';
+        updateStatusDisplay();
+    }
+
+    function setManualMode() {
+        isManualMode = true;
+        document.getElementById('auto-btn').classList.remove('active');
+        document.getElementById('manual-btn').classList.add('active');
+        document.getElementById('manual-controls').style.display = 'flex';
+        
+        // Set manual current activity to actual current activity
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const autoActivity = getCurrentActivityAuto(currentMinutes);
+        manualCurrentActivity = autoActivity.currentIndex;
+        updateStatusDisplay();
+    }
+
+    function getCurrentActivityAuto(currentMinutes) {
+        // Always use real time for this function
+        for (let i = 0; i < schedule.length; i++) {
+            const startMinutes = parseTime(schedule[i].time);
+            const endMinutes = startMinutes + schedule[i].duration;
+            
+            if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+                return {
+                    current: schedule[i],
+                    next: schedule[i + 1] || null,
+                    currentIndex: i
+                };
+            }
+        }
+        return { currentIndex: -1 };
+    }
+
+    function skipActivity() {
+        if (isManualMode && manualCurrentActivity < schedule.length - 1) {
+            manualCurrentActivity++;
+            updateStatusDisplay();
+        }
+    }
+
+    function endCurrentActivity() {
+        if (isManualMode && manualCurrentActivity < schedule.length - 1) {
+            manualCurrentActivity++;
+            updateStatusDisplay();
+        }
+    }
+
+    function adjustTime(minutes) {
+        scheduleOffset += minutes;
+        adjustmentCount++;
+        updateStatusDisplay();
+    }
+
+    function resetToSchedule() {
+        scheduleOffset = 0;
+        adjustmentCount = 0;
+        if (isManualMode) {
+            // Reset manual mode to current real-time activity
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const autoActivity = getCurrentActivityAuto(currentMinutes);
+            manualCurrentActivity = autoActivity.currentIndex;
+        }
+        updateStatusDisplay();
+    }
+
+    function updateStatusDisplay() {
+        const statusElement = document.getElementById('schedule-status');
+        const counterElement = document.getElementById('adjustment-counter');
+        
+        // Update adjustment counter
+        counterElement.textContent = `Adjustments: ${adjustmentCount}`;
+        
+        if (isManualMode) {
+            statusElement.textContent = `Manual Control Active`;
+            statusElement.className = 'status-display behind';
+        } else if (scheduleOffset === 0) {
+            statusElement.textContent = 'Following Real Time - On Schedule';
+            statusElement.className = 'status-display on-time';
+        } else if (scheduleOffset > 0) {
+            statusElement.textContent = `Running ${scheduleOffset} min AHEAD of schedule`;
+            statusElement.className = 'status-display ahead';
+        } else {
+            statusElement.textContent = `Running ${Math.abs(scheduleOffset)} min BEHIND schedule`;
+            statusElement.className = 'status-display behind';
+        }
+    }
+
+    function updateTime() {
+        const now = new Date();
+        
+        // Display current time in military format
+        const militaryTime = now.toLocaleString("en-US", {
+            timeZone: "America/Chicago",
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('current-time').textContent = militaryTime;
+        
+        // Update schedule information
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentSeconds = currentMinutes * 60 + now.getSeconds();
+        const activityInfo = getCurrentActivity(currentMinutes);
+        
+        // Update current activity
+        document.getElementById('current-activity').textContent = activityInfo.current.activity;
+        
+        if (activityInfo.current.time) {
+            const startMinutes = parseTime(activityInfo.current.time);
+            const endMinutes = startMinutes + activityInfo.current.duration;
+            const timeRange = `${formatTime(startMinutes)} - ${formatTime(endMinutes)}`;
+            
+            document.getElementById('current-activity-header').textContent = `Current Activity: ${timeRange}`;
+            
+            // Calculate countdown to start of next activity (if there is one)
+            if (activityInfo.next) {
+                const nextStartMinutes = parseTime(activityInfo.next.time);
+                // Apply schedule offset to the next activity start time
+                const adjustedNextStartMinutes = nextStartMinutes - scheduleOffset;
+                const nextStartSeconds = adjustedNextStartMinutes * 60;
+                const timeToNext = nextStartSeconds - currentSeconds;
+                
+                if (timeToNext > 0) {
+                    const minutes = Math.floor(timeToNext / 60);
+                    const seconds = timeToNext % 60;
+                    document.getElementById('current-countdown').textContent = 
+                        `Next activity starts in: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    document.getElementById('current-countdown').textContent = "Next activity should have started";
+                }
+            } else {
+                document.getElementById('current-countdown').textContent = "No more activities scheduled";
+            }
+        } else {
+            document.getElementById('current-activity-header').textContent = "Current Activity:";
+            document.getElementById('current-countdown').textContent = "";
+        }
+        
+        // Update next activity
+        if (activityInfo.next) {
+            const nextStartMinutes = parseTime(activityInfo.next.time);
+            const nextEndMinutes = nextStartMinutes + activityInfo.next.duration;
+            const nextTimeRange = `${formatTime(nextStartMinutes)} - ${formatTime(nextEndMinutes)}`;
+            
+            document.getElementById('next-activity-header').textContent = `Next Activity: ${nextTimeRange}`;
+            document.getElementById('next-activity').textContent = activityInfo.next.activity;
+        } else {
+            document.getElementById('next-activity-header').textContent = "Next Activity:";
+            document.getElementById('next-activity').textContent = "No more activities scheduled";
+        }
+        
+        // Update full schedule display
+        updateScheduleDisplay(currentMinutes, activityInfo.currentIndex);
+        
+        // Update status display
+        updateStatusDisplay();
+    }
+    
+    function updateScheduleDisplay(currentMinutes, currentIndex) {
+        const scheduleContainer = document.getElementById('full-schedule');
+        scheduleContainer.innerHTML = '';
+        
+        schedule.forEach((item, index) => {
+            const scheduleItem = document.createElement('div');
+            scheduleItem.className = 'schedule-item';
+            scheduleItem.id = `schedule-item-${index}`;
+            
+            const startMinutes = parseTime(item.time);
+            const endMinutes = startMinutes + item.duration;
+            
+            // Determine status
+            if (endMinutes <= currentMinutes) {
+                scheduleItem.classList.add('completed');
+            } else if (index === currentIndex) {
+                scheduleItem.classList.add('current');
+            } else {
+                scheduleItem.classList.add('upcoming');
+            }
+            
+            scheduleItem.innerHTML = `
+                <div class="schedule-time">${formatTime(startMinutes)} - ${formatTime(endMinutes)}</div>
+                <div class="schedule-activity">${item.activity}</div>
+                <div class="schedule-duration">${item.duration}min</div>
+            `;
+            
+            scheduleContainer.appendChild(scheduleItem);
+        });
+        
+        // Scroll to current activity
+        if (currentIndex >= 0) {
+            const currentElement = document.getElementById(`schedule-item-${currentIndex}`);
+            if (currentElement) {
+                currentElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }
+    
+    // Update immediately and then every second
+    updateTime();
+    setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>

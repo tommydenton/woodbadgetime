@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wood Badge Schedule Admin Portal</title>
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏕️ Wood Badge Schedule Admin Portal</h1>
+            <p>Manage schedules for all 5 days of Wood Badge training</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('overview')">📋 Overview</button>
+            <button class="tab" onclick="switchTab('day1')">📅 Day 1</button>
+            <button class="tab" onclick="switchTab('day2')">📅 Day 2</button>
+            <button class="tab" onclick="switchTab('day3')">📅 Day 3</button>
+            <button class="tab" onclick="switchTab('day4')">📅 Day 4</button>
+            <button class="tab" onclick="switchTab('day5')">📅 Day 5</button>
+            <button class="tab" onclick="switchTab('export')">📤 Export</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="input-section">
+                <h3>📊 Schedule Overview</h3>
+                <div class="day-management">
+                    <div class="day-card" id="overview-day1">
+                        <h4>Day 1 Schedule</h4>
+                        <div class="day-info">
+                            <span class="status-indicator status-empty" id="status-day1"></span>
+                            <span id="count-day1">0 activities</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="switchTab('day1')">Configure Day 1</button>
+                    </div>
+                    <div class="day-card" id="overview-day2">
+                        <h4>Day 2 Schedule</h4>
+                        <div class="day-info">
+                            <span class="status-indicator status-empty" id="status-day2"></span>
+                            <span id="count-day2">0 activities</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="switchTab('day2')">Configure Day 2</button>
+                    </div>
+                    <div class="day-card" id="overview-day3">
+                        <h4>Day 3 Schedule</h4>
+                        <div class="day-info">
+                            <span class="status-indicator status-empty" id="status-day3"></span>
+                            <span id="count-day3">0 activities</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="switchTab('day3')">Configure Day 3</button>
+                    </div>
+                    <div class="day-card" id="overview-day4">
+                        <h4>Day 4 Schedule</h4>
+                        <div class="day-info">
+                            <span class="status-indicator status-empty" id="status-day4"></span>
+                            <span id="count-day4">0 activities</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="switchTab('day4')">Configure Day 4</button>
+                    </div>
+                    <div class="day-card" id="overview-day5">
+                        <h4>Day 5 Schedule</h4>
+                        <div class="day-info">
+                            <span class="status-indicator status-empty" id="status-day5"></span>
+                            <span id="count-day5">0 activities</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="switchTab('day5')">Configure Day 5</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="loadSampleData()">🎯 Load Sample Day 1</button>
+                    <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Clear All Data</button>
+                    <button class="btn btn-primary" onclick="switchTab('export')">📤 Export Schedules</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 1 Tab -->
+        <div id="day1" class="tab-content">
+            <div class="input-section">
+                <h3>📅 Day 1 Schedule Configuration</h3>
+                <div class="import-area">
+                    <div class="import-methods">
+                        <div class="import-method">
+                            <h4>📝 Text Import</h4>
+                            <textarea id="text-input-day1" placeholder="Paste your schedule here...
+
+Format examples:
+6:00 AM
+0:30
+Staff Reveille
+
+7:00 AM
+1:00
+Opening Ceremony
+
+Or:
+06:00,30,Staff Reveille
+07:00,60,Opening Ceremony
+
+Time can be in 12-hour (6:00 AM) or 24-hour (06:00) format
+Duration in minutes or H:MM format"></textarea>
+                        </div>
+                        <div class="import-method">
+                            <h4>📁 File Import</h4>
+                            <div class="file-input" onclick="document.getElementById('file-input-day1').click()">
+                                <input type="file" id="file-input-day1" accept=".csv,.txt" onchange="handleFileImport('day1', this.files[0])">
+                                <div class="file-input-text">Click to select CSV or TXT file</div>
+                                <div class="file-info">Supports CSV with Time, Duration, Activity columns</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="format-example">
+                    <strong>Supported Formats:</strong><br>
+                    • Three-line format: Time, Duration, Activity (each on separate line)<br>
+                    • CSV format: Time,Duration,Activity<br>
+                    • Time: 6:00 AM, 18:00, 6:00<br>
+                    • Duration: 30 (minutes), 1:30 (H:MM), 0:30
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="parseSchedule('day1')">📊 Parse Schedule</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule('day1')">🗑️ Clear</button>
+                </div>
+
+                <div id="message-day1"></div>
+            </div>
+
+            <div class="input-section">
+                <h3>📋 Day 1 Schedule Preview</h3>
+                <div class="schedule-preview" id="preview-day1">
+                    <p>No schedule loaded. Use the import options above to add activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 Tab -->
+        <div id="day2" class="tab-content">
+            <div class="input-section">
+                <h3>📅 Day 2 Schedule Configuration</h3>
+                <div class="import-area">
+                    <div class="import-methods">
+                        <div class="import-method">
+                            <h4>📝 Text Import</h4>
+                            <textarea id="text-input-day2" placeholder="Paste your Day 2 schedule here..."></textarea>
+                        </div>
+                        <div class="import-method">
+                            <h4>📁 File Import</h4>
+                            <div class="file-input" onclick="document.getElementById('file-input-day2').click()">
+                                <input type="file" id="file-input-day2" accept=".csv,.txt" onchange="handleFileImport('day2', this.files[0])">
+                                <div class="file-input-text">Click to select CSV or TXT file</div>
+                                <div class="file-info">Supports CSV with Time, Duration, Activity columns</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="parseSchedule('day2')">📊 Parse Schedule</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule('day2')">🗑️ Clear</button>
+                </div>
+                <div id="message-day2"></div>
+            </div>
+            <div class="input-section">
+                <h3>📋 Day 2 Schedule Preview</h3>
+                <div class="schedule-preview" id="preview-day2">
+                    <p>No schedule loaded. Use the import options above to add activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3 Tab -->
+        <div id="day3" class="tab-content">
+            <div class="input-section">
+                <h3>📅 Day 3 Schedule Configuration</h3>
+                <div class="import-area">
+                    <div class="import-methods">
+                        <div class="import-method">
+                            <h4>📝 Text Import</h4>
+                            <textarea id="text-input-day3" placeholder="Paste your Day 3 schedule here..."></textarea>
+                        </div>
+                        <div class="import-method">
+                            <h4>📁 File Import</h4>
+                            <div class="file-input" onclick="document.getElementById('file-input-day3').click()">
+                                <input type="file" id="file-input-day3" accept=".csv,.txt" onchange="handleFileImport('day3', this.files[0])">
+                                <div class="file-input-text">Click to select CSV or TXT file</div>
+                                <div class="file-info">Supports CSV with Time, Duration, Activity columns</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="parseSchedule('day3')">📊 Parse Schedule</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule('day3')">🗑️ Clear</button>
+                </div>
+                <div id="message-day3"></div>
+            </div>
+            <div class="input-section">
+                <h3>📋 Day 3 Schedule Preview</h3>
+                <div class="schedule-preview" id="preview-day3">
+                    <p>No schedule loaded. Use the import options above to add activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 4 Tab -->
+        <div id="day4" class="tab-content">
+            <div class="input-section">
+                <h3>📅 Day 4 Schedule Configuration</h3>
+                <div class="import-area">
+                    <div class="import-methods">
+                        <div class="import-method">
+                            <h4>📝 Text Import</h4>
+                            <textarea id="text-input-day4" placeholder="Paste your Day 4 schedule here..."></textarea>
+                        </div>
+                        <div class="import-method">
+                            <h4>📁 File Import</h4>
+                            <div class="file-input" onclick="document.getElementById('file-input-day4').click()">
+                                <input type="file" id="file-input-day4" accept=".csv,.txt" onchange="handleFileImport('day4', this.files[0])">
+                                <div class="file-input-text">Click to select CSV or TXT file</div>
+                                <div class="file-info">Supports CSV with Time, Duration, Activity columns</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="parseSchedule('day4')">📊 Parse Schedule</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule('day4')">🗑️ Clear</button>
+                </div>
+                <div id="message-day4"></div>
+            </div>
+            <div class="input-section">
+                <h3>📋 Day 4 Schedule Preview</h3>
+                <div class="schedule-preview" id="preview-day4">
+                    <p>No schedule loaded. Use the import options above to add activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 5 Tab -->
+        <div id="day5" class="tab-content">
+            <div class="input-section">
+                <h3>📅 Day 5 Schedule Configuration</h3>
+                <div class="import-area">
+                    <div class="import-methods">
+                        <div class="import-method">
+                            <h4>📝 Text Import</h4>
+                            <textarea id="text-input-day5" placeholder="Paste your Day 5 schedule here..."></textarea>
+                        </div>
+                        <div class="import-method">
+                            <h4>📁 File Import</h4>
+                            <div class="file-input" onclick="document.getElementById('file-input-day5').click()">
+                                <input type="file" id="file-input-day5" accept=".csv,.txt" onchange="handleFileImport('day5', this.files[0])">
+                                <div class="file-input-text">Click to select CSV or TXT file</div>
+                                <div class="file-info">Supports CSV with Time, Duration, Activity columns</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn" onclick="parseSchedule('day5')">📊 Parse Schedule</button>
+                    <button class="btn btn-secondary" onclick="clearSchedule('day5')">🗑️ Clear</button>
+                </div>
+                <div id="message-day5"></div>
+            </div>
+            <div class="input-section">
+                <h3>📋 Day 5 Schedule Preview</h3>
+                <div class="schedule-preview" id="preview-day5">
+                    <p>No schedule loaded. Use the import options above to add activities.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Tab -->
+        <div id="export" class="tab-content">
+            <div class="input-section">
+                <h3>📤 Export Schedules</h3>
+                <p>Generate time tracker pages for each configured day</p>
+                
+                <div class="action-buttons">
+                    <button class="btn" onclick="exportDay('day1')">📄 Export Day 1 Page</button>
+                    <button class="btn" onclick="exportDay('day2')">📄 Export Day 2 Page</button>
+                    <button class="btn" onclick="exportDay('day3')">📄 Export Day 3 Page</button>
+                    <button class="btn" onclick="exportDay('day4')">📄 Export Day 4 Page</button>
+                    <button class="btn" onclick="exportDay('day5')">📄 Export Day 5 Page</button>
+                    <button class="btn btn-primary" onclick="exportAllDays()">📦 Export All Days</button>
+                </div>
+                
+                <div id="export-messages"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
